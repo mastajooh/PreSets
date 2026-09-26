@@ -12,6 +12,7 @@ public sealed class GlamourerBridge
 {
     private const int LocalPlayer = 0;
     private const uint NoLock = 0;
+    // Must be a List, not byte[]: Dalamud IPC serializes byte[] as a base64 string, which Glamourer cannot read back.
     private static readonly List<byte> Undyed = new() { 0, 0 };
 
     private readonly ApiVersion apiVersion;
@@ -58,6 +59,7 @@ public sealed class GlamourerBridge
     {
         var flags = ApplyFlag.Equipment | (temporary ? ApplyFlag.Once : 0);
         var failures = new List<string>();
+        string? firstError = null;
 
         foreach (var (slot, piece) in set.Pieces)
         {
@@ -70,13 +72,31 @@ public sealed class GlamourerBridge
             catch (Exception ex)
             {
                 Services.Log.Warning(ex, $"Glamourer SetItem failed for {piece.Name}.");
-                failures.Add($"{slot}: IPC error");
+                failures.Add($"{slot}: {ex.GetType().Name}");
+                firstError ??= ex.Message;
             }
         }
 
         return failures.Count == 0
             ? $"{(temporary ? "Previewing" : "Applied")} {set.Name}."
-            : $"{set.Name}: some pieces failed ({string.Join(", ", failures)}).";
+            : $"{set.Name}: some pieces failed ({string.Join(", ", failures)}).{(firstError != null ? $" Reason: {firstError}" : string.Empty)}";
+    }
+
+    /// <summary>Mix and match: puts one piece on and keeps it (not temporary), leaving your other slots alone.</summary>
+    public string ApplyPiece(GearPiece piece)
+    {
+        try
+        {
+            var ec = setItem.Invoke(LocalPlayer, ToApiSlot(piece.Slot), piece.ItemId, Undyed, NoLock, ApplyFlag.Equipment);
+            return ec is GlamourerApiEc.Success or GlamourerApiEc.NothingDone
+                ? $"Applied {piece.Name}."
+                : $"{piece.Name}: failed ({ec}).";
+        }
+        catch (Exception ex)
+        {
+            Services.Log.Warning(ex, $"Glamourer SetItem failed for {piece.Name}.");
+            return $"{piece.Name}: failed ({ex.GetType().Name}: {ex.Message})";
+        }
     }
 
     public string Revert()
@@ -89,7 +109,7 @@ public sealed class GlamourerBridge
         catch (Exception ex)
         {
             Services.Log.Warning(ex, "Glamourer RevertState failed.");
-            return "Revert failed: IPC error.";
+            return $"Revert failed: {ex.GetType().Name}: {ex.Message}";
         }
     }
 
