@@ -1,6 +1,6 @@
 [
   {
-    "Author": "YOUR_NAME",
+    "Author": "mastajooh",
     "Name": "Gearset Gallery",
     "InternalName": "GearsetGallery",
     "AssemblyVersion": "0.1.0.0",
@@ -9,9 +9,9 @@
     "ApplicableVersion": "any",
     "DalamudApiLevel": 15,
     "Tags": [ "glamour", "glamourer", "gear", "gearset", "fashion" ],
-    "RepoUrl": "https://github.com/YOUR_GITHUB_USER/GearsetGallery",
-    "DownloadLinkInstall": "https://github.com/YOUR_GITHUB_USER/GearsetGallery/releases/latest/download/latest.zip",
-    "DownloadLinkUpdate": "https://github.com/YOUR_GITHUB_USER/GearsetGallery/releases/latest/download/latest.zip",
-    "DownloadLinkTesting": "https://github.com/YOUR_GITHUB_USER/GearsetGallery/releases/latest/download/latest.zip"
+    "RepoUrl": "https://github.com/mastajooh/PreSets",
+    "DownloadLinkInstall": "https://github.com/mastajooh/PreSets/releases/latest/download/latest.zip",
+    "DownloadLinkUpdate": "https://github.com/mastajooh/PreSets/releases/latest/download/latest.zip",
+    "DownloadLinkTesting": "https://github.com/mastajooh/PreSets/releases/latest/download/latest.zip"
   }
 ]
