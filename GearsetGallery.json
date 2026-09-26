@@ -1,0 +1,9 @@
+{
+  "Author": "YOUR_NAME",
+  "Name": "Gearset Gallery",
+  "Punchline": "A browsable gallery of every armor set, applied through Glamourer.",
+  "Description": "Browse every armor set in the game as a gallery. Preview any set on your own character and apply it with Glamourer. Requires Glamourer.\n\nCommand: /gearsets",
+  "ApplicableVersion": "any",
+  "Tags": [ "glamour", "glamourer", "gear", "gearset", "fashion" ],
+  "RepoUrl": "https://github.com/YOUR_GITHUB_USER/GearsetGallery"
+}

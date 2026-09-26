@@ -1,0 +1,15 @@
+<Project Sdk="Dalamud.NET.Sdk/15.0.0">
+  <PropertyGroup>
+    <Version>0.1.0.0</Version>
+    <Description>Browse every armor set in the game as a gallery and apply it through Glamourer.</Description>
+    <PackageProjectUrl>https://github.com/YOUR_GITHUB_USER/GearsetGallery</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Glamourer's official IPC wrapper (no runtime dependency on Glamourer itself). -->
+    <PackageReference Include="Glamourer.Api" Version="2.8.2" />
+  </ItemGroup>
+</Project>
