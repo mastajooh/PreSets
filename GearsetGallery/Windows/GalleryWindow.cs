@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Dalamud.Bindings.ImGui;
+using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.Interface.Textures;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
@@ -264,7 +265,7 @@ public sealed class GalleryWindow : Window
     }
 
     /// <summary>One row per slot: small icon + item name. Empty slots stay as a dim row so every card lines up.</summary>
-    private static void DrawPieceList(Gearset set)
+    private void DrawPieceList(Gearset set)
     {
         foreach (var slot in SlotOrder)
         {
@@ -275,6 +276,7 @@ public sealed class GalleryWindow : Window
             {
                 DrawIcon(piece.IconId, RowIconSize);
                 var iconHovered = ImGui.IsItemHovered();
+                var iconRightClicked = ImGui.IsItemClicked(ImGuiMouseButton.Right);
 
                 ImGui.SameLine();
                 ImGui.SetCursorPosY(rowY + textOffset);
@@ -282,6 +284,8 @@ public sealed class GalleryWindow : Window
 
                 if (iconHovered || ImGui.IsItemHovered())
                     DrawPieceTooltip(set, piece);
+                if (iconRightClicked || ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                    OnPieceRightClick(piece);
             }
             else
             {
@@ -294,7 +298,7 @@ public sealed class GalleryWindow : Window
     }
 
     /// <summary>Compact mode: one bigger icon per slot in a single row.</summary>
-    private static void DrawIconStrip(Gearset set)
+    private void DrawIconStrip(Gearset set)
     {
         for (var i = 0; i < SlotOrder.Length; i++)
         {
@@ -306,11 +310,46 @@ public sealed class GalleryWindow : Window
                 DrawIcon(piece.IconId, IconSize);
                 if (ImGui.IsItemHovered())
                     DrawPieceTooltip(set, piece);
+                if (ImGui.IsItemClicked(ImGuiMouseButton.Right))
+                    OnPieceRightClick(piece);
             }
             else
             {
                 ImGui.Dummy(IconSize);
             }
+        }
+    }
+
+    /// <summary>Right-click a piece: wear just that piece (mix and match) and post its item link in your chat log.</summary>
+    private void OnPieceRightClick(GearPiece piece)
+    {
+        if (glamourer.IsAvailable)
+        {
+            status = glamourer.ApplyPiece(piece);
+            previewKey = null;
+        }
+        else
+        {
+            status = "Glamourer not detected; linked the item only.";
+        }
+
+        LinkInChat(piece);
+    }
+
+    /// <summary>Prints a clickable item link to your own chat log (only you can see it; nothing is sent to other players).</summary>
+    private static void LinkInChat(GearPiece piece)
+    {
+        try
+        {
+            var message = new SeStringBuilder()
+                .AddText("[Gearset Gallery] ")
+                .AddItemLink(piece.ItemId, false)
+                .Build();
+            Services.Chat.Print(message);
+        }
+        catch (Exception ex)
+        {
+            Services.Log.Warning(ex, $"Could not link {piece.Name} in chat.");
         }
     }
 
@@ -336,6 +375,7 @@ public sealed class GalleryWindow : Window
         {
             ImGui.TextUnformatted(piece.Name);
             ImGui.TextDisabled($"{piece.Slot}  |  Lv. {piece.Level}");
+            ImGui.TextDisabled("Right-click: wear this piece + link in chat");
         }
 
         var sameLook = set.AllItems.Where(p => p.Slot == piece.Slot && p.ItemId != piece.ItemId).ToList();
@@ -383,7 +423,7 @@ public sealed class GalleryWindow : Window
         if (!string.IsNullOrEmpty(status))
             ImGui.TextUnformatted(status);
         else
-            ImGui.TextDisabled("Preview is temporary (your next real gear change clears it). Apply stays until you revert.");
+            ImGui.TextDisabled("Right-click any piece to wear just that piece. Preview is temporary; Apply stays until you revert.");
     }
 
     private void MarkDirty()
