@@ -12,7 +12,7 @@ public sealed class GlamourerBridge
 {
     private const int LocalPlayer = 0;
     private const uint NoLock = 0;
-    private static readonly byte[] Undyed = { 0, 0 };
+    private static readonly List<byte> Undyed = new() { 0, 0 };
 
     private readonly ApiVersion apiVersion;
     private readonly SetItem setItem;
