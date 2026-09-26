@@ -3,7 +3,7 @@
     "Author": "mastajooh",
     "Name": "Gearset Gallery",
     "InternalName": "GearsetGallery",
-    "AssemblyVersion": "0.1.1.0",
+    "AssemblyVersion": "0.1.2.0",
     "Punchline": "A browsable gallery of every armor set, applied through Glamourer.",
     "Description": "Browse every armor set in the game as a gallery. Preview any set on your own character and apply it with Glamourer. Requires Glamourer.",
     "ApplicableVersion": "any",
