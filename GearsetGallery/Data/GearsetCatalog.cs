@@ -77,8 +77,8 @@ public sealed class GearsetCatalog
                 continue;
 
             var key = ((uint)setId << 8) | variant;
-            var piece = new GearPiece(item.RowId, name, item.Icon, slot.Value, item.LevelEquip, ToGender(item.EquipRestriction));
-
+               var piece = new GearPiece(item.RowId, name, item.Icon, slot.Value, item.LevelEquip, ToGender((byte)item.EquipRestriction.RowId));
+            
             if (!groups.TryGetValue(key, out var list))
                 groups[key] = list = new List<GearPiece>();
             list.Add(piece);
